@@ -1,0 +1,15 @@
+{
+  "name": "mesh",
+  "version": "0.0.1",
+  "main": "app.ts",
+  "scripts": {
+    "build": "webpack"
+  },
+  "dependencies": {
+    "@types/webpack": "~4.41.26",
+    "ts-loader": "~8.0.16",
+    "typescript": "~4.1.4",
+    "webpack": "~5.21.2",
+    "webpack-cli": "~4.5.0"
+  }
+}
