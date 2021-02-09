@@ -26,11 +26,12 @@ class Main {
 
   @bind
   display() {
-    this.layer.context.clearRect(0, 0, this.layer.w, this.layer.h);
-    this.triangles.renderTriangles(this.layer.context);
+    const { layer, triangles } = this
+    layer.context.clearRect(0, 0, layer.w, layer.h);
+    triangles.renderTriangles(layer.context);
   }
 }
 
 onload = () => {
-  new Main(document.querySelector(`body`));
+  new Main(document.body);
 }

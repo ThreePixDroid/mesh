@@ -14,6 +14,8 @@ interface Triangle {
   c: Particle
 }
 
+const { hypot, random, PI, cos, sin, sqrt } = Math
+
 export class Triangles {
   colorTimer = 0
   colorSpeed = 30
@@ -40,10 +42,10 @@ export class Triangles {
   constructor({ w, h }, size = 150) {
     this.w = w
     this.h = h
-    this.d = Math.hypot(w, h)
+    this.d = hypot(w, h)
 
     this.stepX = size
-    this.stepY = size * Math.sqrt(3) / 2  // calculate height of triangle
+    this.stepY = size * sqrt(3) / 2  // calculate height of triangle
 
     this.rows = ((h / this.stepY) | 0) + this.extraPoints
     this.cols = ((w / this.stepX) | 0) + this.extraPoints
@@ -57,23 +59,26 @@ export class Triangles {
   }
 
   createParticles() {
-    this.particles = [];
+    const { stepX, stepY, offsetY, offsetX } = this
+    const { particles, extraOffsetX, rows, cols } = this
 
-    for (let i = 0; i < this.rows; i++) {
-      for (let j = 0; j < this.cols; j++) {
-        const shiftX = i % 2 == 0 ? this.extraOffsetX : -this.extraOffsetX
+    particles.splice(0, particles.length)
 
-        const x = j * this.stepX + shiftX + this.offsetX;
-        const y = i * this.stepY + this.offsetY;
+    for (let i = 0; i < rows; i++) {
+      for (let j = 0; j < cols; j++) {
+        const shiftX = i % 2 == 0 ? extraOffsetX : -extraOffsetX
+
+        const x = j * stepX + shiftX + offsetX;
+        const y = i * stepY + offsetY;
 
         const homeX = x;
         const homeY = y;
 
-        const angle = Math.random() * Math.PI * 2;
-        const radius = Math.random() * this.extraOffsetX + this.extraOffsetX;
-        const velocity = Math.random() * 2 - 1;
+        const angle = random() * PI * 2;
+        const radius = random() * extraOffsetX + extraOffsetX;
+        const velocity = random() * 2 - 1;
 
-        this.particles.push({
+        particles.push({
           x, y, homeX, homeY,
           angle, radius, velocity,
         })
@@ -89,11 +94,11 @@ export class Triangles {
       const vertices: Particle[] = []
 
       for (let x = 0; x < cols; x++) {
-        const one = y % 2 == 0 ? x + (y + 1) * cols : x + y * cols
-        const two = y % 2 == 0 ? x + y * cols : x + (y + 1) * cols
+        let [a, b] = [x + y * cols, x + (y + 1) * cols]
+        
+        if(y & 1) [a, b] = [b, a]
 
-        vertices.push(particles[one])
-        vertices.push(particles[two])
+        vertices.push(particles[a], particles[b])
       }
       for (let i = 0; i < vertices.length - 2; i++) {
 
@@ -114,11 +119,12 @@ export class Triangles {
 
       p.angle += p.velocity * correction
 
-      p.x = Math.cos(p.angle) * p.radius + p.homeX
-      p.y = Math.sin(p.angle) * p.radius + p.homeY
+      p.x = cos(p.angle) * p.radius + p.homeX
+      p.y = sin(p.angle) * p.radius + p.homeY
     }
 
-    this.colorTimer = colorTimer >= 360 ? 0 : colorTimer + colorSpeed * correction
+    this.colorTimer = colorTimer >= 360 ? 0 
+      : colorTimer + colorSpeed * correction
   }
 
   renderTriangles(ctx: CanvasRenderingContext2D) {
@@ -129,7 +135,7 @@ export class Triangles {
 
       const posX = (a.x + b.x + c.x) / 3
       const posY = (a.y + b.y + c.y) / 3
-      const dist = Math.hypot(posX, posY)
+      const dist = hypot(posX, posY)
 
       const hue = dist / d * colorPlate + colorTimer
 
