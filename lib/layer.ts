@@ -1,3 +1,5 @@
+import { bind } from "./bind"
+
 export class Layer {
   canvas = document.createElement('canvas')
   context = this.canvas.getContext('2d')
@@ -7,11 +9,11 @@ export class Layer {
 
   constructor(container: HTMLElement) {
     container.appendChild(this.canvas)                   //put Canvas to Container
-    this.fitToContainer = this.fitToContainer.bind(this)          
     addEventListener(`resize`, this.fitToContainer)
     this.fitToContainer()
   }
 
+  @bind
   fitToContainer() {
     const { canvas } = this                             //fit Canvas size to container
 

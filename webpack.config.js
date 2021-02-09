@@ -1,16 +1,18 @@
 const { join } = require("path");
 
+const devmode = false
+
 module.exports = {
   entry: {
-    main: './app.ts'
+    main: './main.ts'
   },
   output: {
     path: join(__dirname, 'dist'),
     filename: '[name].js',
     publicPath: '/dist/'
   },
-  mode: 'production',
-  watch: false,
+  mode: devmode ? 'development' : 'production',
+  watch: devmode,
   resolve: { extensions: ['.ts'] },
   module: {
     rules: [

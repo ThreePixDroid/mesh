@@ -1,3 +1,5 @@
+import { bind } from "./bind"
+
 type Update = (ct: number) => void
 
 // game / animation loop
@@ -12,10 +14,10 @@ export class Loop {
   constructor(update: Update, display: Function) {
     this.update = update;
     this.display = display;
-    this.animate = this.animate.bind(this)
     requestAnimationFrame(this.animate)
   }
 
+  @bind
   animate(currentTime) {
     requestAnimationFrame(this.animate)
     this.deltaTime = currentTime - this.lastUpdate

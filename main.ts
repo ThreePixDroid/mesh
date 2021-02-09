@@ -1,27 +1,30 @@
-import { Triangles } from './triangles'
-import { Layer } from './layer'
-import { Loop } from './loop'
+import { Triangles } from './lib/triangles'
+import { Layer } from './lib/layer'
+import { Loop } from './lib/loop'
+import { bind } from './lib/bind'
 
-class App {
+class Main {
   layer = new Layer(this.container)
-  loop = new Loop(ct => this.update(ct), () => this.display())
+  loop = new Loop(this.update, this.display)
 
   triangles?: Triangles
 
   constructor(private container) {
-    this.createTriangles = this.createTriangles.bind(this)
     addEventListener(`resize`, this.createTriangles)
     this.createTriangles();
   }
 
+  @bind
   createTriangles() {
     this.triangles = new Triangles(this.layer);
   }
 
+  @bind
   update(correction = 0) {
     this.triangles.updateParticles(correction);
   }
 
+  @bind
   display() {
     this.layer.context.clearRect(0, 0, this.layer.w, this.layer.h);
     this.triangles.renderTriangles(this.layer.context);
@@ -29,5 +32,5 @@ class App {
 }
 
 onload = () => {
-  new App(document.querySelector(`body`));
+  new Main(document.querySelector(`body`));
 }
